@@ -12,3 +12,10 @@ logs
 results
 
 npm-debug.log
+
+env.json
+*.DS_Store
+node_modules
+.settings
+.project
+.c9revisions

@@ -1,0 +1,25 @@
+{
+  "name": "route-registrar",
+  "version": "0.0.3",
+  "description": "Visits and requires every file ending with \"Controller.js\" and call its \"init\" function passing express \"app\" variable along",
+  "main": "routeRegistrar.js",
+  "scripts": {
+    "test": "exit 0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gammasoft/route-registrar.git"
+  },
+  "keywords": [
+    "controller",
+    "MVC",
+    "express",
+    "route",
+    "routes"
+  ],
+  "author": "Renato Gama <renato@gammasoft.com.br>",
+  "license": "BSD",
+  "bugs": {
+    "url": "https://github.com/gammasoft/route-registrar/issues"
+  }
+}
