@@ -26,8 +26,5 @@
     "methods": "0.0.1",
     "underscore": "~1.4.4",
     "gammautils": "0.0.3"
-  },
-  "devDependencies": {
-    "portfinder": "~0.2.1"
   }
 }
