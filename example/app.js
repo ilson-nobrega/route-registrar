@@ -1,3 +1,5 @@
+//run before testing: npm install express portfinder
+
 var
 	express = require("express"),
 	portfinder = require("portfinder"),
