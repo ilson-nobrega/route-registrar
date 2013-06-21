@@ -17,7 +17,7 @@ app.get("/stillworks", function(req, res, next){
 });
 
 portfinder.getPort(function(err, port){
-	if(err) throw new Error("Error finding free port");
+	if(err) throw new Error("Error finding available port");
 	
 	app.listen(port, function(){
 		console.log("Listening on port " + port);
