@@ -1,6 +1,6 @@
 {
   "name": "route-registrar",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Visits and requires every file ending with \"Controller.js\" and call its \"init\" function passing express \"app\" variable along",
   "main": "routeRegistrar.js",
   "scripts": {
@@ -25,6 +25,7 @@
   "dependencies": {
     "methods": "0.0.1",
     "underscore": "~1.4.4",
-    "gammautils": "0.0.3"
-  }
+    "gammautils": "0.0.7"
+  },
+  "devDependencies": { }
 }
