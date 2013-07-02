@@ -6,7 +6,6 @@ var
 	aUtils = require("gammautils").array,
 	_ = require("underscore");
 
-
 function pathRegExp(path, keys, sensitive, strict) {
 	//this code comes from express: 
 	//https://github.com/visionmedia/express/blob/master/lib/utils.js#L293-L313
@@ -34,7 +33,18 @@ function pathRegExp(path, keys, sensitive, strict) {
 	return new RegExp('^' + path + '$', sensitive ? '' : 'i');
 }
 
-module.exports = function(lookUpPath, app, options){
+var appBkp = null;
+var unregisteredRoutes = [];
+
+module.exports.register = function(){
+	unregisteredRoutes.forEach(function(route){
+		route.fn.apply(appBkp, route.args);
+	});
+};
+
+module.exports.find = function(lookUpPath, app, options){
+	appBkp = app;
+	
 	methods.push("all");
 	methods.push("del");
 	
@@ -43,29 +53,33 @@ module.exports = function(lookUpPath, app, options){
 		app[method] = _.wrap(app[method], function(fn){
 			var args = oUtils.argsToArray(arguments, 1);
 			
-			var params = [];
-			var meta = { 
-				method: (method === "del" ? "delete" : method),
-				regexp: pathRegExp(args[0], params, false, false),
-				params: params,
-				path: args[0], 
-				meta: {}
-			};
-			
-			if(args.length > 2 && oUtils.isObject(args[args.length - 1])){
-				meta.meta = args[args.length - 1];
-				aUtils.removeLast(args);
-			} 
-			
-			routes.push(meta);
-			
-			var before = arguments.callee.caller.caller.before;
-			if(before) aUtils.insertAt(args, 1, before);
-			
-			var after = arguments.callee.caller.caller.after;
-			if(after) aUtils.insertAt(args, args.length - 1, after);
-
-			return fn.apply(app, args);
+			if(args.length === 1 && method === "get")
+				return fn.apply(app, args);
+			else{
+				var params = [];
+				var meta = { 
+						method: (method === "del" ? "delete" : method),
+						regexp: pathRegExp(args[0], params, false, false),
+						params: params,
+						path: args[0], 
+						meta: {}
+				};
+				
+				if(args.length > 2 && oUtils.isObject(args[args.length - 1])){
+					meta.meta = args[args.length - 1];
+					aUtils.removeLast(args);
+				} 
+				
+				routes.push(meta);
+				
+				var before = arguments.callee.caller.caller.before;
+				if(before) aUtils.insertAt(args, 1, before);
+				
+				var after = arguments.callee.caller.caller.after;
+				if(after) aUtils.insertAt(args, args.length - 1, after);
+				
+				unregisteredRoutes.push({fn: fn, args: args});
+			}
 		});
 	});
 	
