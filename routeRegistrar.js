@@ -6,6 +6,34 @@ var
 	aUtils = require("gammautils").array,
 	_ = require("underscore");
 
+
+function pathRegExp(path, keys, sensitive, strict) {
+	//this code comes from express: 
+	//https://github.com/visionmedia/express/blob/master/lib/utils.js#L293-L313
+	
+	if (toString.call(path) == '[object RegExp]') return path;
+	if (Array.isArray(path)) path = '(' + path.join('|') + ')';
+	path = path
+		.concat(strict ? '' : '/?')
+		.replace(/\/\(/g, '(?:/')
+		.replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?(\*)?/g, function(_, slash, format, key, capture, optional, star){
+      
+			keys.push({ name: key, optional: !! optional });
+			slash = slash || '';
+			return ''
+				+ (optional ? '' : slash)
+		        + '(?:'
+		        + (optional ? slash : '')
+		        + (format || '') + (capture || (format && '([^/.]+?)' || '([^/]+?)')) + ')'
+		        + (optional || '')
+		        + (star ? '(/*)?' : '');
+    })
+    	.replace(/([\/.])/g, '\\$1')
+    	.replace(/\*/g, '(.*)');
+  
+	return new RegExp('^' + path + '$', sensitive ? '' : 'i');
+}
+
 module.exports = function(lookUpPath, app, options){
 	methods.push("all");
 	methods.push("del");
@@ -15,7 +43,15 @@ module.exports = function(lookUpPath, app, options){
 		app[method] = _.wrap(app[method], function(fn){
 			var args = oUtils.argsToArray(arguments, 1);
 			
-			var meta = { method: method, route: args[0]};
+			var params = [];
+			var meta = { 
+				method: (method === "del" ? "delete" : method),
+				regexp: pathRegExp(args[0], params, false, false),
+				params: params,
+				path: args[0], 
+				meta: {}
+			};
+			
 			if(args.length > 2 && oUtils.isObject(args[args.length - 1])){
 				meta.meta = args[args.length - 1];
 				aUtils.removeLast(args);
