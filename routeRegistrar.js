@@ -37,6 +37,22 @@ var appBkp = null;
 var unregisteredRoutes = [];
 
 module.exports.register = function(){
+	unregisteredRoutes.sort(function(a, b){
+		a = a.args[0].split("/");
+		b = b.args[0].split("/");
+		
+		if(a.length !== b.length){
+			return a.length - b.length;
+		}else{
+			for(var i = 0; i < a.length; i++){
+				if(a.indexOf(":") === 0) return -1;
+				if(b.indexOf(":") === 0) return 1;
+			}
+			
+			return 0; 
+		}
+	});
+	
 	unregisteredRoutes.forEach(function(route){
 		route.fn.apply(appBkp, route.args);
 	});
