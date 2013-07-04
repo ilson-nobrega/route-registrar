@@ -112,5 +112,21 @@ module.exports.find = function(lookUpPath, app, options){
 		}
 	});
 	
+	routes.sort(function(a, b){
+		a = a.path.split("/");
+		b = b.path.split("/");
+		
+		if(a.length !== b.length){
+			return a.length - b.length;
+		}else{
+			for(var i = 0; i < a.length; i++){
+				if(a.indexOf(":") === 0) return -1;
+				if(b.indexOf(":") === 0) return 1;
+			}
+			
+			return 0; 
+		}
+	});
+	
 	return routes;
 };
