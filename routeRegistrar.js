@@ -45,8 +45,8 @@ module.exports.register = function(){
 			return a.length - b.length;
 		}else{
 			for(var i = 0; i < a.length; i++){
-				if(a.indexOf(":") === 0) return -1;
-				if(b.indexOf(":") === 0) return 1;
+				if(a[i].indexOf(":") === 0) return 1;
+				if(b[i].indexOf(":") === 0) return -1;
 			}
 			
 			return 0; 
@@ -120,8 +120,8 @@ module.exports.find = function(lookUpPath, app, options){
 			return a.length - b.length;
 		}else{
 			for(var i = 0; i < a.length; i++){
-				if(a.indexOf(":") === 0) return -1;
-				if(b.indexOf(":") === 0) return 1;
+				if(a[i].indexOf(":") === 0) return 1;
+				if(b[i].indexOf(":") === 0) return -1;
 			}
 			
 			return 0; 
