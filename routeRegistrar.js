@@ -36,7 +36,7 @@ function pathRegExp(path, keys, sensitive, strict) {
 var appBkp = null;
 var unregisteredRoutes = [];
 
-module.exports.register = function(){
+module.exports.register = function(debug){
 	unregisteredRoutes.sort(function(a, b){
 		a = a.args[0].split("/");
 		b = b.args[0].split("/");
@@ -54,6 +54,9 @@ module.exports.register = function(){
 	});
 	
 	unregisteredRoutes.forEach(function(route){
+		if(debug)
+			console.log(route.args[0]);
+		
 		route.fn.apply(appBkp, route.args);
 	});
 };
