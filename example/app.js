@@ -5,11 +5,13 @@ var
 	portfinder = require("portfinder"),
 	routeRegistrar = require("../routeRegistrar");
 
+
 var app = express();
 
 var routes = routeRegistrar.find(__dirname + "/controllers", app);
 
-//any configurations here!
+app.use(routeRegistrar.middleware);
+app.use(app.router);
 
 routeRegistrar.register(true);
 

@@ -1,12 +1,18 @@
 module.exports.before = function(req, res, next){
-    console.log(' >>> This will be called before every action <<<');
+    console.log('Current Route: ');
+    console.log(require('util').inspect(req.routeRegistrar.route));
     next();
 };
 
 module.exports.init = function(app){
-    app.get("/", getIndex);
+    app.get("/", getIndex, {testing: true});
+    app.get("/client/:id", getClient, {private: true});
 };
 
-function getIndex(req, res, next){
+function getClient(req, res, next) {
+    res.send("Client #" + req.params.id);
+}
+
+function getIndex(req, res, next) {
     res.send("This works!");
 }

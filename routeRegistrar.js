@@ -63,6 +63,25 @@ module.exports.register = function(debug){
     });
 };
 
+module.exports.middleware = function(req, res, next) {
+    var found = null, route, i;
+
+    for(i = 0; i < unregisteredRoutes.length; i++) {
+        route = unregisteredRoutes[i];
+
+        if(route.meta.method === req.method.toLowerCase() && req.path.toString().match(route.meta.regexp)) {
+            found = route;
+            break;
+        }
+    }
+
+    req.routeRegistrar = {
+        route: found
+    };
+
+    next();
+};
+
 module.exports.find = function(lookUpPath, app, options){
     appBkp = app;
 
@@ -79,11 +98,11 @@ module.exports.find = function(lookUpPath, app, options){
             else{
                 var params = [];
                 var meta = {
-                        method: (method === 'del' ? 'delete' : method),
-                        regexp: pathRegExp(args[0], params, false, false),
-                        params: params,
-                        path: args[0],
-                        meta: {}
+                    method: (method === 'del' ? 'delete' : method),
+                    regexp: pathRegExp(args[0], params, false, false),
+                    params: params,
+                    path: args[0],
+                    meta: {}
                 };
 
                 if(args.length > 2 && oUtils.isObject(args[args.length - 1])){
@@ -103,7 +122,7 @@ module.exports.find = function(lookUpPath, app, options){
                     args.push(after);
                 }
 
-                unregisteredRoutes.push({fn: fn, args: args, path: args[0]});
+                unregisteredRoutes.push({fn: fn, args: args, path: args[0], meta: meta});
             }
         });
     });
