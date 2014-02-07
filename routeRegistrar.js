@@ -61,6 +61,8 @@ module.exports.register = function(debug){
 
         route.fn.apply(appBkp, route.args);
     });
+
+    sortRoutes(unregisteredRoutes);
 };
 
 module.exports.middleware = function(req, res, next) {
@@ -80,6 +82,20 @@ module.exports.middleware = function(req, res, next) {
     };
 
     next();
+};
+
+module.exports.visit = function(method, argument) {
+
+    fs.readdirSync(lookUpPath).forEach(function(controllerName) {
+        if(controllerName.indexOf('Controller.js') !== -1) {
+            var controller = require(path.join(lookUpPath, controllerName));
+            if(controller['method']) {
+                controller['method'](argument);
+            } else {
+                throw new Error(controllerName + ' has no method ' + method);
+            }
+        }
+    });
 };
 
 module.exports.find = function(lookUpPath, app, options){
