@@ -84,7 +84,7 @@ module.exports.middleware = function(req, res, next) {
     next();
 };
 
-module.exports.visit = function(method, argument) {
+module.exports.visit = function(lookUpPath, method, argument) {
 
     fs.readdirSync(lookUpPath).forEach(function(controllerName) {
         if(controllerName.indexOf('Controller.js') !== -1) {
