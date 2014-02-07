@@ -84,15 +84,18 @@ module.exports.middleware = function(req, res, next) {
     next();
 };
 
-module.exports.visit = function(lookUpPath, method, argument) {
+module.exports.visit = function(lookUpPath, method, argument, debug) {
+    if(typeof debug === 'undefined') {
+        debug = true;
+    }
 
     fs.readdirSync(lookUpPath).forEach(function(controllerName) {
         if(controllerName.indexOf('Controller.js') !== -1) {
             var controller = require(path.join(lookUpPath, controllerName));
-            if(controller['method']) {
-                controller['method'](argument);
-            } else {
-                throw new Error(controllerName + ' has no method ' + method);
+            if(controller[method]) {
+                controller[method](argument);
+            } else if(debug) {
+                console.log('routeRegistrar.visit >>> "' + controllerName + '" has no method "' + method + '"');
             }
         }
     });
